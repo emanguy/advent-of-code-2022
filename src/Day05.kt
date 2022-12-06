@@ -33,7 +33,7 @@ fun parseInput(inputs: List<String>): ParsedInput {
     stackLines.removeLast()
 
     // Reverse the input & build the stacks
-    var stacks = mutableListOf<Stack<Char>>()
+    val stacks = mutableListOf<Stack<Char>>()
     for (stackInput in stackLines.reversed()) {
         var workingInput = stackInput
 
@@ -48,7 +48,7 @@ fun parseInput(inputs: List<String>): ParsedInput {
             // If possible, truncate the first 4 letters to move on to the next crate
             workingInput = if (workingInput.length > 3) {
                 workingInput.substring(4)
-            } else {
+            } else { // Otherwise there should be no additional crates, and we can set the input string blank
                 ""
             }
             stackIndex++
@@ -56,7 +56,7 @@ fun parseInput(inputs: List<String>): ParsedInput {
     }
 
     // Parse the instructions
-    var instructionRegex = """^move (\d+) from (\d+) to (\d+)$""".toRegex()
+    val instructionRegex = """^move (\d+) from (\d+) to (\d+)$""".toRegex()
     val instructions = mutableListOf<Instruction>()
 
     // The iterator should only have the instructions left
@@ -73,7 +73,13 @@ fun parseInput(inputs: List<String>): ParsedInput {
     return ParsedInput(stacks, instructions)
 }
 
+fun topsOfStacks(stacks: List<Stack<Char>>) = stacks
+    .filter { it.isNotEmpty() }
+    .map { it.peek() }
+    .fold("") { finalString, currentChar -> finalString + currentChar }
+
 fun main() {
+
     fun part1(inputs: List<String>): String {
         val stacksAndInstructions = parseInput(inputs)
 
@@ -81,23 +87,39 @@ fun main() {
             var amountToMove = instruction.quantity
             while (amountToMove > 0 && stacksAndInstructions.stacks[instruction.sourceIdx].isNotEmpty()) {
                 stacksAndInstructions.stacks[instruction.destinationIdx].push(stacksAndInstructions.stacks[instruction.sourceIdx].pop())
+                amountToMove--
             }
         }
 
-        return stacksAndInstructions.stacks.map { it.peek() }.fold("") { finalString, currentChar -> finalString + currentChar }
+        return topsOfStacks(stacksAndInstructions.stacks)
     }
 
-    fun part2(inputs: List<String>): Int {
-        TODO()
+    fun part2(inputs: List<String>): String {
+        val stacksAndInstructions = parseInput(inputs)
+
+        for (instruction in stacksAndInstructions.instructions) {
+            var amountToMove = instruction.quantity
+            val bufferStack = Stack<Char>()
+
+            while (amountToMove > 0 && stacksAndInstructions.stacks[instruction.sourceIdx].isNotEmpty()) {
+                bufferStack.push(stacksAndInstructions.stacks[instruction.sourceIdx].pop())
+                amountToMove--
+            }
+
+            while (bufferStack.isNotEmpty()) {
+                stacksAndInstructions.stacks[instruction.destinationIdx].push(bufferStack.pop())
+            }
+        }
+
+        return topsOfStacks(stacksAndInstructions.stacks)
     }
 
     // Verify the sample input works
     val inputs = readInput("Day05_test")
-    println(part1(inputs))
-//    check(part1(inputs) == 0)
-//    check(part2(inputs) == 0)
+    check(part1(inputs) == "CMZ")
+    check(part2(inputs) == "MCD")
 
-//    val finalInputs = readInput("DayXX")
-//    part1(finalInputs)
-//    part2(finalInputs)
+    val finalInputs = readInput("Day05")
+    println(part1(finalInputs))
+    println(part2(finalInputs))
 }
