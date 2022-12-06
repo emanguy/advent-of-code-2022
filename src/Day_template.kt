@@ -12,7 +12,7 @@ fun main() {
 //    check(part1(inputs) == 0)
 //    check(part2(inputs) == 0)
 
-    val finalInputs = readInput("DayXX")
-//    part1(finalInputs)
-//    part2(finalInputs)
+//    val finalInputs = readInput("DayXX")
+//    println(part1(finalInputs))
+//    println(part2(finalInputs))
 }
