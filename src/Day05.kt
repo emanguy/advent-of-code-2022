@@ -81,37 +81,37 @@ fun topsOfStacks(stacks: List<Stack<Char>>) = stacks
 fun main() {
 
     fun part1(inputs: List<String>): String {
-        val stacksAndInstructions = parseInput(inputs)
+        val (stacks, instructions) = parseInput(inputs)
 
-        for (instruction in stacksAndInstructions.instructions) {
+        for (instruction in instructions) {
             var amountToMove = instruction.quantity
-            while (amountToMove > 0 && stacksAndInstructions.stacks[instruction.sourceIdx].isNotEmpty()) {
-                stacksAndInstructions.stacks[instruction.destinationIdx].push(stacksAndInstructions.stacks[instruction.sourceIdx].pop())
+            while (amountToMove > 0 && stacks[instruction.sourceIdx].isNotEmpty()) {
+                stacks[instruction.destinationIdx].push(stacks[instruction.sourceIdx].pop())
                 amountToMove--
             }
         }
 
-        return topsOfStacks(stacksAndInstructions.stacks)
+        return topsOfStacks(stacks)
     }
 
     fun part2(inputs: List<String>): String {
-        val stacksAndInstructions = parseInput(inputs)
+        val (stacks, instructions) = parseInput(inputs)
 
-        for (instruction in stacksAndInstructions.instructions) {
+        for (instruction in instructions) {
             var amountToMove = instruction.quantity
             val bufferStack = Stack<Char>()
 
-            while (amountToMove > 0 && stacksAndInstructions.stacks[instruction.sourceIdx].isNotEmpty()) {
-                bufferStack.push(stacksAndInstructions.stacks[instruction.sourceIdx].pop())
+            while (amountToMove > 0 && stacks[instruction.sourceIdx].isNotEmpty()) {
+                bufferStack.push(stacks[instruction.sourceIdx].pop())
                 amountToMove--
             }
 
             while (bufferStack.isNotEmpty()) {
-                stacksAndInstructions.stacks[instruction.destinationIdx].push(bufferStack.pop())
+                stacks[instruction.destinationIdx].push(bufferStack.pop())
             }
         }
 
-        return topsOfStacks(stacksAndInstructions.stacks)
+        return topsOfStacks(stacks)
     }
 
     // Verify the sample input works
