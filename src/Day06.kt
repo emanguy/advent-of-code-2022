@@ -1,8 +1,8 @@
 fun main() {
-    fun part1(input: String): Int {
-        for (window in input.asSequence().withIndex().windowed(4)) {
+    fun firstUniqueWindowIndex(input: String, windowSize: Int): Int {
+        for (window in input.asSequence().withIndex().windowed(windowSize)) {
             val uniqueCharacterSet = window.map { it.value }.toSet()
-            if (uniqueCharacterSet.size == 4) {
+            if (uniqueCharacterSet.size == windowSize) {
                 return window.last().index + 1
             }
         }
@@ -10,15 +10,12 @@ fun main() {
         return -1
     }
 
-    fun part2(input: String): Int {
-        for (window in input.asSequence().withIndex().windowed(14)) {
-            val uniqueCharacterSet = window.map { it.value }.toSet()
-            if (uniqueCharacterSet.size == 14) {
-                return window.last().index + 1
-            }
-        }
+    fun part1(input: String): Int {
+        return firstUniqueWindowIndex(input, 4)
+    }
 
-        return -1
+    fun part2(input: String): Int {
+        return firstUniqueWindowIndex(input, 14)
     }
 
     // Verify the sample input works
