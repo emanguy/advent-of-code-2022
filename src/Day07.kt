@@ -6,9 +6,10 @@ sealed class FSEntity {
         val name: String,
         val parent: Directory? = null,
         val children: MutableList<FSEntity> = mutableListOf()
-    ) :
-        FSEntity() {
+    ) : FSEntity() {
+
         private var cachedSize: Long? = null
+
         fun size(): Long {
             if (cachedSize == null) {
                 cachedSize = children.sumOf {
@@ -37,6 +38,7 @@ fun main() {
             // Doing a command
             if (input.startsWith("$")) { // Handle a directory change
                 val targetDirectory = input.removePrefix("$ cd ")
+
                 workingDirectory = if (targetDirectory == "..") {
                     // We can't go higher than root
                     workingDirectory.parent ?: workingDirectory
@@ -81,10 +83,11 @@ fun main() {
     }
 
     fun part2(inputs: List<String>): Long {
-        val totalDiskSize = 70_000_000L
-        val requiredEmptySpace = 30_000_000L
         val directoryRoot = parseInput(inputs)
         val allDirectories = allDirectoriesInFs(directoryRoot)
+
+        val totalDiskSize = 70_000_000L
+        val requiredEmptySpace = 30_000_000L
         val currentDiskUsage = directoryRoot.size()
         val currentFreeSpace = totalDiskSize - currentDiskUsage
         val amountToDelete = requiredEmptySpace - currentFreeSpace
